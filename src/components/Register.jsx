@@ -1,11 +1,18 @@
 import { Link, useNavigate } from "react-router-dom";
+import { registerUser } from "../data/strangers-things-api";
 
 const Register = () => {
   const navigate = useNavigate();
 
-  const handleFormSubmission = (event) => {
+  const handleFormSubmission = async (event) => {
     event.preventDefault();
-    navigate("/");
+    try {
+      await registerUser("", "");
+    } catch (error) {
+      console.log("done stuff");
+      alert(error);
+    }
+    //navigate("/");
   };
 
   return (
@@ -14,7 +21,7 @@ const Register = () => {
       <form onSubmit={handleFormSubmission} className="flex flex-col">
         <input type="text" />
         <input type="password" />
-        <input type="submit" value="Login" />
+        <input type="submit" value="Register" />
       </form>
       <Link to={"/login"}>LOGIN</Link>
     </div>
