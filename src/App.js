@@ -7,7 +7,7 @@ import Register from "./components/Register";
 function App() {
   return (
     <BrowserRouter>
-      <div className="bg-slate-600 min-h-[100vh] flex flex-col  justify-center justify-items-center">
+      <div className="bg-background min-h-[100vh] flex flex-col  justify-center justify-items-center">
         <Routes>
           <Route path="/" element={<Posts />} />
           <Route path="/login" element={<Login />} />
