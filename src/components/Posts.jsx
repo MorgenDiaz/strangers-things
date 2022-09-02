@@ -1,9 +1,10 @@
-import { downloadPosts } from "../data/strangers-things-api";
+import { downloadPosts, createPost } from "../data/strangers-things-api";
 import { useLocalStorage } from "../data/local-storage";
 import { useEffect } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Post } from "./Post";
+import { CreatePost } from "./CreatePost";
 
 const download = async (setPosts) => {
   const data = await downloadPosts();
@@ -12,17 +13,55 @@ const download = async (setPosts) => {
   setPosts(data);
 };
 
+const addPost = async (
+  token,
+  title,
+  description,
+  price,
+  location,
+  willDeliver
+) => {
+  try {
+    const data = await createPost(
+      token,
+      title,
+      description,
+      price,
+      location,
+      willDeliver
+    );
+
+    console.log(data);
+  } catch (error) {
+    alert(error);
+  }
+};
+
 const Posts = () => {
   const [user, setUser] = useLocalStorage("user", null);
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
     download(setPosts);
-  }, []);
+    //addPost(user.token);
+  }, [user]);
+
+  const handlePostCreated = async (
+    title,
+    description,
+    price,
+    location,
+    willDeliver
+  ) => {
+    console.log(title, description, price, location, willDeliver);
+    await addPost(user.token, title, description, price, location, willDeliver);
+    download(setPosts);
+  };
 
   return (
     <div>
       {user ? <h1>{user.name}</h1> : <Link to={"/login"}>LOGIN</Link>}
+      <CreatePost onPostCreatedHandler={handlePostCreated} />
       <h1>Posts</h1>
       <div className="flex flex-col place-content-evenly content-evenly">
         {posts.map((post) => {
