@@ -60,7 +60,11 @@ const Posts = () => {
 
   return (
     <div>
-      {user ? <h1>{user.name}</h1> : <Link to={"/login"}>LOGIN</Link>}
+      {user ? (
+        <Link to={"/profile"}>{user.name}</Link>
+      ) : (
+        <Link to={"/login"}>LOGIN</Link>
+      )}
       <CreatePost onPostCreatedHandler={handlePostCreated} />
       <h1>Posts</h1>
       <div className="flex flex-col place-content-evenly content-evenly">
