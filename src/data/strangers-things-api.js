@@ -186,3 +186,30 @@ export const createPost = async (
     if (serverError) throw serverError;
   }
 };
+
+export const deletePost = async (token, postId) => {
+  const options = {
+    method: "DELETE",
+    headers: authHeaders(token),
+  };
+
+  let serverError = null;
+
+  try {
+    const httpResponse = await fetch(`${BASE_URL + POSTS}/${postId}`, options);
+    const serverResponse = await httpResponse.json();
+    console.log(serverResponse);
+
+    const { error } = serverResponse;
+
+    if (error) {
+      serverError = error;
+      serverError = Error(error.message);
+    }
+  } catch (error) {
+    console.error(error);
+    throw GENERAL_TECHNICAL_ERROR;
+  } finally {
+    if (serverError) throw serverError;
+  }
+};

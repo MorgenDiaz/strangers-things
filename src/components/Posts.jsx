@@ -43,7 +43,6 @@ const Posts = () => {
 
   useEffect(() => {
     download(setPosts);
-    //addPost(user.token);
   }, [user]);
 
   const handlePostCreated = async (
@@ -60,11 +59,6 @@ const Posts = () => {
 
   return (
     <div>
-      {user ? (
-        <Link to={"/profile"}>{user.name}</Link>
-      ) : (
-        <Link to={"/login"}>LOGIN</Link>
-      )}
       <CreatePost onPostCreatedHandler={handlePostCreated} />
       <h1>Posts</h1>
       <div className="flex flex-col place-content-evenly content-evenly">
