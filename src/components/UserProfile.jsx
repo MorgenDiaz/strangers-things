@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useLocalStorage } from "../data/local-storage";
 import { downloadUser } from "../data/strangers-things-api";
 import { deletePost } from "../data/strangers-things-api";
+import { UserPostList } from "./UserPostList";
 
 const downloadPofile = async (token, setProfile) => {
   const profileData = await downloadUser(token);
@@ -25,25 +26,11 @@ export const UserProfile = () => {
   };
 
   return (
-    <div className="flex flex-col items-stretch justify-items-start">
-      {profile.posts &&
-        profile.posts
-          .filter((post) => post.active)
-          .map((post) => {
-            return (
-              <div key={post._id} className="bg-overlay p-2 m-2">
-                <h2>{post.title}</h2>
-                <h2>{post.price}</h2>
-                <button
-                  onClick={() => {
-                    handleDeletePostClicked(post._id);
-                  }}
-                >
-                  DELETE
-                </button>
-              </div>
-            );
-          })}
-    </div>
+    profile.posts && (
+      <UserPostList
+        posts={profile.posts.filter((post) => post.active)}
+        deletePostClickedHandler={handleDeletePostClicked}
+      />
+    )
   );
 };
