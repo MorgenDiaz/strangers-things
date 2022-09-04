@@ -1,4 +1,8 @@
-import { downloadPosts, createPost } from "../data/strangers-things-api";
+import {
+  downloadPosts,
+  createPost,
+  sendMessage,
+} from "../data/strangers-things-api";
 import { useLocalStorage } from "../data/local-storage";
 import { Fragment, useEffect } from "react";
 import { useState } from "react";
@@ -66,7 +70,8 @@ const Posts = () => {
     setMessageDetails(details);
   };
 
-  const handleSendMessageClicked = () => {
+  const handleSendMessageClicked = async (message) => {
+    await sendMessage(user.token, messageDetails.postId, message);
     setIsCreateMessageDisplaying(false);
   };
 

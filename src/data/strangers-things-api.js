@@ -213,3 +213,41 @@ export const deletePost = async (token, postId) => {
     if (serverError) throw serverError;
   }
 };
+
+export const sendMessage = async (token, postId, message) => {
+  const options = {
+    method: "POST",
+    headers: authHeaders(token),
+    body: JSON.stringify({
+      message: {
+        content: message,
+      },
+    }),
+  };
+
+  let serverError = null;
+
+  try {
+    const httpResponse = await fetch(
+      `${BASE_URL + POSTS}/${postId}/messages`,
+      options
+    );
+    const serverResponse = await httpResponse.json();
+    console.log(serverResponse);
+
+    const { data, error } = serverResponse;
+
+    if (error) {
+      serverError = error;
+      serverError = Error(error.message);
+    } else if (data) {
+      console.log(data.message);
+      return data.message;
+    }
+  } catch (error) {
+    console.error(error);
+    throw GENERAL_TECHNICAL_ERROR;
+  } finally {
+    if (serverError) throw serverError;
+  }
+};
