@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 import { Post } from "./Post";
 import { CreatePost } from "./CreatePost";
 import { CreateMessage } from "./CreateMessage";
+import { SearchPosts } from "./SearchPosts";
 
 const download = async (setPosts) => {
   const data = await downloadPosts();
@@ -45,6 +46,7 @@ const addPost = async (
 const Posts = () => {
   const [user, setUser] = useLocalStorage("user", null);
   const [posts, setPosts] = useState([]);
+  const [filteredPosts, setFilteredPosts] = useState([]);
   const [isCreateMessageDisplaying, setIsCreateMessageDisplaying] =
     useState(false);
   const [messageDetails, setMessageDetails] = useState({});
@@ -52,6 +54,10 @@ const Posts = () => {
   useEffect(() => {
     download(setPosts);
   }, [user]);
+
+  useEffect(() => {
+    setFilteredPosts(posts);
+  }, [posts]);
 
   const handlePostCreated = async (
     title,
@@ -79,6 +85,20 @@ const Posts = () => {
     setIsCreateMessageDisplaying(false);
   };
 
+  const handleSearchChanged = (event) => {
+    const search = event.target.value.toLowerCase();
+    const searchResults = posts.filter(
+      (post) =>
+        post.title.toLowerCase().includes(search) ||
+        post.author.username.toLowerCase().includes(search) ||
+        post.description.toLowerCase().includes(search) ||
+        post.location.toLowerCase().includes(search) ||
+        post.price.toLowerCase().includes(search)
+    );
+
+    setFilteredPosts(searchResults);
+  };
+
   return (
     <div className="">
       {isCreateMessageDisplaying && (
@@ -93,8 +113,15 @@ const Posts = () => {
 
       <CreatePost onPostCreatedHandler={handlePostCreated} />
       <h1>Posts</h1>
+      <form className="flex p-2">
+        <input
+          onChange={handleSearchChanged}
+          placeholder="Search Posts..."
+          className="grow"
+        />
+      </form>
       <div className="flex flex-col place-content-evenly content-evenly">
-        {posts.map((post) => {
+        {filteredPosts.map((post) => {
           const { _id, title, author, description, location, price } = post;
           return (
             <Fragment key={_id}>

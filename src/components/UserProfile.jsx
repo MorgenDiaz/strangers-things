@@ -26,11 +26,23 @@ export const UserProfile = () => {
   };
 
   return (
-    profile.posts && (
-      <UserPostList
-        posts={profile.posts.filter((post) => post.active)}
-        deletePostClickedHandler={handleDeletePostClicked}
-      />
-    )
+    <div className="flex flex-col items-center">
+      <h1>Posts</h1>
+      {profile.posts && (
+        <UserPostList
+          posts={profile.posts.filter((post) => post.active)}
+          deletePostClickedHandler={handleDeletePostClicked}
+        />
+      )}
+      <h1>Messages</h1>
+      {profile.messages && (
+        <div>
+          {profile.messages.map((message) => {
+            <h2>{message.fromUser.username}</h2>;
+            <p>{message.content}</p>;
+          })}
+        </div>
+      )}
+    </div>
   );
 };
