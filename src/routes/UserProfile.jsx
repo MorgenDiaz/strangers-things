@@ -1,16 +1,16 @@
 import { useState } from "react";
 import { useEffect } from "react";
 import { useLocalStorage } from "../data/local-storage";
-import { downloadUser } from "../data/strangers-things-api";
-import { deletePost } from "../data/strangers-things-api";
-import { UserPostList } from "./UserPostList";
+import { downloadUser, deletePost } from "../data/api";
+import { UserPostList } from "../components/UserPostList";
+import { Outlet } from "react-router-dom";
 
 const downloadPofile = async (token, setProfile) => {
   const profileData = await downloadUser(token);
   setProfile(profileData);
 };
 
-export const UserProfile = () => {
+const UserProfile = () => {
   const [user, setUser] = useLocalStorage("user", null);
   const [profile, setProfile] = useState({});
 
@@ -38,11 +38,17 @@ export const UserProfile = () => {
       {profile.messages && (
         <div>
           {profile.messages.map((message) => {
-            <h2>{message.fromUser.username}</h2>;
-            <p>{message.content}</p>;
+            return (
+              <>
+                <h2>{message.fromUser.username}</h2>
+                <p>{message.content}</p>
+              </>
+            );
           })}
         </div>
       )}
     </div>
   );
 };
+
+export default UserProfile;

@@ -1,16 +1,10 @@
-import {
-  downloadPosts,
-  createPost,
-  sendMessage,
-} from "../data/strangers-things-api";
+import { downloadPosts, createPost, sendMessage } from "../data/api";
 import { useLocalStorage } from "../data/local-storage";
 import { Fragment, useEffect } from "react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { Post } from "./Post";
-import { CreatePost } from "./CreatePost";
-import { CreateMessage } from "./CreateMessage";
-import { SearchPosts } from "./SearchPosts";
+import { Post } from "../components/Post";
+import { CreatePost } from "../components/CreatePost";
+import { CreateMessage } from "../components/CreateMessage";
 
 const download = async (setPosts) => {
   const data = await downloadPosts();
@@ -71,9 +65,9 @@ const Posts = () => {
     download(setPosts);
   };
 
-  const handleWriteMessageClicked = (details) => {
+  const handleWriteMessageClicked = (postId, recipientName) => {
     setIsCreateMessageDisplaying(true);
-    setMessageDetails(details);
+    setMessageDetails({ postId, recipientName });
   };
 
   const handleSendMessageClicked = async (message) => {
@@ -103,7 +97,7 @@ const Posts = () => {
     <div className="">
       {isCreateMessageDisplaying && (
         <CreateMessage
-          recipient={messageDetails.recipient}
+          recipient={messageDetails.recipientName}
           postId={messageDetails.postId}
           sendMessageHandler={handleSendMessageClicked}
           cancelHandler={handleCancelMessageClicked}
@@ -122,27 +116,28 @@ const Posts = () => {
       </form>
       <div className="flex flex-col place-content-evenly content-evenly">
         {filteredPosts.map((post) => {
-          const { _id, title, author, description, location, price } = post;
+          const {
+            _id,
+            title,
+            author,
+            description,
+            location,
+            price,
+            willDeliver,
+          } = post;
           return (
-            <Fragment key={_id}>
-              <Post
-                title={title}
-                seller={author.username}
-                description={description}
-                location={location}
-                price={price}
-              />
-              <button
-                onClick={() =>
-                  handleWriteMessageClicked({
-                    postId: _id,
-                    recipient: author.username,
-                  })
-                }
-              >
-                Send Message
-              </button>
-            </Fragment>
+            <Post
+              key={_id}
+              title={title}
+              seller={author.username}
+              description={description}
+              location={location}
+              price={price}
+              willDeliver={willDeliver}
+              writeMessageClickedHandler={() => {
+                handleWriteMessageClicked(_id, author.username);
+              }}
+            />
           );
         })}
       </div>

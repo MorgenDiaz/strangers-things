@@ -1,18 +1,19 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { login } from "../data/strangers-things-api";
+import { registerUser } from "../data/api";
+import { useState, useEffect } from "react";
 import { useLocalStorage } from "../data/local-storage";
 
-const Login = () => {
-  const navigate = useNavigate();
+const Register = () => {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useLocalStorage("user", null);
 
+  const navigate = useNavigate();
+
   const handleFormSubmission = async (event) => {
     event.preventDefault();
     try {
-      const userToken = await login(name, password);
+      const userToken = await registerUser(name, password);
       console.log(userToken);
       setUser({ name, token: userToken });
       navigate("/");
@@ -33,15 +34,15 @@ const Login = () => {
 
   return (
     <div>
-      <h2 className="text-3xl font-bold uppercase">Login</h2>
+      <h2 className="text-3xl font-bold uppercase">Register</h2>
       <form onSubmit={handleFormSubmission} className="flex flex-col">
         <input type="text" onChange={handleNameChanged} />
         <input type="password" onChange={handlePasswordChanged} />
-        <input type="submit" value="Login" />
+        <input type="submit" value="Register" />
       </form>
-      <Link to={"/register"}>REGISTER</Link>
+      <Link to={"/login"}>LOGIN</Link>
     </div>
   );
 };
 
-export default Login;
+export default Register;
