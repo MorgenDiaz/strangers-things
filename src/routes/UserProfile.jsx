@@ -1,52 +1,137 @@
 import { useState } from "react";
 import { useEffect } from "react";
-import { useLocalStorage } from "../data/local-storage";
 import { downloadUser, deletePost } from "../data/api";
 import { UserPostList } from "../components/UserPostList";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
+import Conversation from "../components/Conversation";
+
+const POSTS_TAB = "posts";
+const MESSAGES_TAB = "messages";
 
 const downloadPofile = async (token, setProfile) => {
   const profileData = await downloadUser(token);
+  console.log(profileData.messages);
   setProfile(profileData);
 };
 
-const UserProfile = () => {
-  const [user, setUser] = useLocalStorage("user", null);
-  const [profile, setProfile] = useState({});
+const groupMessagesByPost = (messages) => {
+  const messagesByPosts = {};
+
+  for (let message of messages) {
+    if (!messagesByPosts[message.post._id])
+      messagesByPosts[message.post._id] = {
+        title: message.post.title,
+        messages: [],
+      };
+
+    messagesByPosts[message.post._id].messages.push({
+      sender: message.fromUser.username,
+      content: message.content,
+    });
+  }
+
+  return messagesByPosts;
+};
+
+const getPostMessages = (messages) => {
+  const postMessages = groupMessagesByPost(messages);
+
+  const conversations = [];
+
+  for (let postId in postMessages) {
+    conversations.push(postMessages[postId]);
+  }
+
+  return conversations;
+};
+
+const UserProfile = ({ user }) => {
+  const [profile, setProfile] = useState(null);
+  const [tab, setTab] = useState(POSTS_TAB);
 
   const token = user.token ? user.token : null;
+  const navigate = useNavigate();
 
   useEffect(() => {
     downloadPofile(token, setProfile);
   }, [token]);
+
+  const handleEditPostClicked = async (post) => {
+    navigate("/create", { state: { post } });
+  };
 
   const handleDeletePostClicked = async (postId) => {
     await deletePost(token, postId);
     downloadPofile(token, setProfile);
   };
 
+  const renerTabContent = () => {
+    switch (tab) {
+      case POSTS_TAB:
+        return (
+          <UserPostList
+            posts={profile.posts.filter((post) => post.active)}
+            editPostClickedHandler={handleEditPostClicked}
+            deletePostClickedHandler={handleDeletePostClicked}
+          />
+        );
+      case MESSAGES_TAB: {
+        const postConversations = getPostMessages(profile.messages);
+
+        console.log(postConversations);
+        return (
+          <div className="flex flex-col gap-4">
+            {postConversations.map((conversation, i) => {
+              return (
+                <Conversation
+                  key={i}
+                  title={conversation.title}
+                  messages={conversation.messages}
+                  accountName={user.name}
+                />
+              );
+            })}
+          </div>
+        );
+      }
+      default:
+        return;
+    }
+  };
+
+  const handlePostsTabClicked = () => {
+    setTab(POSTS_TAB);
+  };
+
+  const handleMessagesTabClicked = () => {
+    setTab(MESSAGES_TAB);
+  };
+
+  const STYLE_ACTIVE_TAB = "font-semibold border-b-2 border-nav";
+
   return (
-    <div className="flex flex-col items-center">
-      <h1>Posts</h1>
-      {profile.posts && (
-        <UserPostList
-          posts={profile.posts.filter((post) => post.active)}
-          deletePostClickedHandler={handleDeletePostClicked}
-        />
-      )}
-      <h1>Messages</h1>
-      {profile.messages && (
-        <div>
-          {profile.messages.map((message) => {
-            return (
-              <>
-                <h2>{message.fromUser.username}</h2>
-                <p>{message.content}</p>
-              </>
-            );
-          })}
-        </div>
-      )}
+    <div className="flex flex-col items-stretch p-4">
+      <div className="flex justify-evenly mb-4">
+        <h1
+          onClick={handlePostsTabClicked}
+          className={`grow text-lg text-center text-text_secondary pb-2 ${
+            tab === POSTS_TAB ? STYLE_ACTIVE_TAB : ""
+          }`}
+        >
+          Posts
+        </h1>
+        <h1
+          onClick={handleMessagesTabClicked}
+          className={`grow text-lg text-center text-text_secondary pb-2 ${
+            tab === MESSAGES_TAB ? STYLE_ACTIVE_TAB : ""
+          }`}
+        >
+          {" "}
+          Messages
+        </h1>
+      </div>
+
+      {profile && renerTabContent()}
     </div>
   );
 };

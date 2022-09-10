@@ -1,69 +1,30 @@
-import { downloadPosts, createPost, sendMessage } from "../data/api";
-import { useLocalStorage } from "../data/local-storage";
-import { Fragment, useEffect } from "react";
-import { useState } from "react";
+import { downloadPosts, sendMessage } from "../data/api";
+import { useState, useEffect } from "react";
 import { Post } from "../components/Post";
-import { CreatePost } from "../components/CreatePost";
 import { CreateMessage } from "../components/CreateMessage";
+import { Outlet, useNavigate } from "react-router-dom";
 
-const download = async (setPosts) => {
-  const data = await downloadPosts();
-
-  console.log(data);
+const download = async (setPosts, token) => {
+  const data = await downloadPosts(token);
   setPosts(data);
 };
 
-const addPost = async (
-  token,
-  title,
-  description,
-  price,
-  location,
-  willDeliver
-) => {
-  try {
-    const data = await createPost(
-      token,
-      title,
-      description,
-      price,
-      location,
-      willDeliver
-    );
-
-    console.log(data);
-  } catch (error) {
-    alert(error);
-  }
-};
-
-const Posts = () => {
-  const [user, setUser] = useLocalStorage("user", null);
+const Posts = ({ user }) => {
   const [posts, setPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [isCreateMessageDisplaying, setIsCreateMessageDisplaying] =
     useState(false);
   const [messageDetails, setMessageDetails] = useState({});
 
+  const navigate = useNavigate();
+
   useEffect(() => {
-    download(setPosts);
+    download(setPosts, user?.token);
   }, [user]);
 
   useEffect(() => {
     setFilteredPosts(posts);
   }, [posts]);
-
-  const handlePostCreated = async (
-    title,
-    description,
-    price,
-    location,
-    willDeliver
-  ) => {
-    console.log(title, description, price, location, willDeliver);
-    await addPost(user.token, title, description, price, location, willDeliver);
-    download(setPosts);
-  };
 
   const handleWriteMessageClicked = (postId, recipientName) => {
     setIsCreateMessageDisplaying(true);
@@ -105,35 +66,23 @@ const Posts = () => {
         />
       )}
 
-      <CreatePost onPostCreatedHandler={handlePostCreated} />
-      <h1>Posts</h1>
-      <form className="flex p-2">
-        <input
-          onChange={handleSearchChanged}
-          placeholder="Search Posts..."
-          className="grow"
-        />
-      </form>
-      <div className="flex flex-col place-content-evenly content-evenly">
+      <div className="flex items-center fixed left-0 right-0 h-20 bg-background ">
+        <form className="flex grow">
+          <input
+            onChange={handleSearchChanged}
+            placeholder="Search Posts..."
+            className="grow p-2 mx-4"
+          />
+        </form>
+      </div>
+      <div className="flex flex-col place-content-evenly content-evenly pt-16">
         {filteredPosts.map((post) => {
-          const {
-            _id,
-            title,
-            author,
-            description,
-            location,
-            price,
-            willDeliver,
-          } = post;
+          const { _id, author } = post;
           return (
             <Post
               key={_id}
-              title={title}
-              seller={author.username}
-              description={description}
-              location={location}
-              price={price}
-              willDeliver={willDeliver}
+              signedIn={user != null}
+              post={post}
               writeMessageClickedHandler={() => {
                 handleWriteMessageClicked(_id, author.username);
               }}
@@ -141,6 +90,27 @@ const Posts = () => {
           );
         })}
       </div>
+
+      {user && (
+        <svg
+          onClick={() => {
+            navigate(`/create`);
+          }}
+          xmlns="http://www.w3.org/2000/svg"
+          fill="#CCCCCC"
+          viewBox="0 0 24 24"
+          strokeWidth={1.5}
+          stroke="currentColor"
+          className="fixed bottom-2 right-2 w-14 h-14"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+      )}
+      <Outlet />
     </div>
   );
 };

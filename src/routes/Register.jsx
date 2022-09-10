@@ -1,12 +1,11 @@
 import { Link, useNavigate } from "react-router-dom";
 import { registerUser } from "../data/api";
-import { useState, useEffect } from "react";
-import { useLocalStorage } from "../data/local-storage";
+import { useState } from "react";
 
-const Register = () => {
+const Register = ({ setUser }) => {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
-  const [user, setUser] = useLocalStorage("user", null);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const navigate = useNavigate();
 
@@ -14,11 +13,10 @@ const Register = () => {
     event.preventDefault();
     try {
       const userToken = await registerUser(name, password);
-      console.log(userToken);
       setUser({ name, token: userToken });
       navigate("/");
     } catch (error) {
-      alert(error);
+      setErrorMessage(error.message);
     }
   };
 
@@ -33,14 +31,32 @@ const Register = () => {
   };
 
   return (
-    <div>
-      <h2 className="text-3xl font-bold uppercase">Register</h2>
-      <form onSubmit={handleFormSubmission} className="flex flex-col">
-        <input type="text" onChange={handleNameChanged} />
-        <input type="password" onChange={handlePasswordChanged} />
-        <input type="submit" value="Register" />
+    <div className="flex flex-col pt-12 px-6">
+      <h2 className="text-2xl uppercase pb-4">{"create an account"}</h2>
+
+      {errorMessage && <p className="mb-2">{errorMessage}</p>}
+
+      <form onSubmit={handleFormSubmission} className="flex flex-col gap-4">
+        <input
+          onChange={handleNameChanged}
+          type="text"
+          required
+          className="p-2 text-sm"
+        />
+
+        <input
+          onChange={handlePasswordChanged}
+          type="password"
+          required
+          className="p-2 text-sm"
+        />
+
+        <input type="submit" value={"signup"} className="uppercase font-bold" />
       </form>
-      <Link to={"/login"}>LOGIN</Link>
+
+      <Link to="/login" className="uppercase self-center text-text_secondary">
+        {"login"}
+      </Link>
     </div>
   );
 };

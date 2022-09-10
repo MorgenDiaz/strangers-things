@@ -6,8 +6,8 @@ module.exports = {
       colors: {
         overlay: "#EEEEEE",
         background: "#CCCCCC",
-        300: "#999999",
-        navigation: "#666666",
+        navigation: "#999999",
+        nav: "#666666",
         text_secondary: "#333333",
         text: "#000000",
       },
