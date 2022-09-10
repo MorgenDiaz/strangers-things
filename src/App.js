@@ -27,7 +27,7 @@ function App() {
   });
 
   return (
-    <div className="bg-background min-h-[100vh] flex flex-col text-text pt-16">
+    <div className="bg-gray-400 min-h-[100vh] flex flex-col text-text pt-16">
       <Navigation user={user} setUser={setUser} />
 
       {isLoading && <Loading />}

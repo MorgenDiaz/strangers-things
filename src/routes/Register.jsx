@@ -1,6 +1,8 @@
 import { Link, useNavigate } from "react-router-dom";
 import { registerUser } from "../data/api";
 import { useState } from "react";
+import TextBox from "../components/TextBox";
+import PrimaryButton from "../components/PrimaryButton";
 
 const Register = ({ setUser }) => {
   const [name, setName] = useState("");
@@ -32,29 +34,30 @@ const Register = ({ setUser }) => {
 
   return (
     <div className="flex flex-col pt-12 px-6">
-      <h2 className="text-2xl uppercase pb-4">{"create an account"}</h2>
+      <h2 className="text-2xl font-semibold self-center text-gray-900 tracking-wide uppercase pb-6">
+        {"create an account"}
+      </h2>
 
       {errorMessage && <p className="mb-2">{errorMessage}</p>}
 
       <form onSubmit={handleFormSubmission} className="flex flex-col gap-4">
-        <input
+        <TextBox
           onChange={handleNameChanged}
-          type="text"
-          required
-          className="p-2 text-sm"
+          placeholder="User Name"
+          required={true}
         />
 
-        <input
+        <TextBox
           onChange={handlePasswordChanged}
           type="password"
-          required
-          className="p-2 text-sm"
+          placeholder={"Password"}
+          required={true}
         />
 
-        <input type="submit" value={"signup"} className="uppercase font-bold" />
+        <PrimaryButton value={"signup"} />
       </form>
 
-      <Link to="/login" className="uppercase self-center text-text_secondary">
+      <Link to="/login" className="pt-2 uppercase self-center text-gray-800">
         {"login"}
       </Link>
     </div>
