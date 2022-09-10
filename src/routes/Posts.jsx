@@ -4,12 +4,18 @@ import { Post } from "../components/Post";
 import { CreateMessage } from "../components/CreateMessage";
 import { Outlet, useNavigate } from "react-router-dom";
 
-const download = async (setPosts, token) => {
-  const data = await downloadPosts(token);
-  setPosts(data);
+const download = async (setPosts, token, setIsLoading) => {
+  try {
+    const data = await downloadPosts(token);
+    setPosts(data);
+  } catch (error) {
+    alert(error.message);
+  }
+
+  setIsLoading(false);
 };
 
-const Posts = ({ user }) => {
+const Posts = ({ user, setIsLoading }) => {
   const [posts, setPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [isCreateMessageDisplaying, setIsCreateMessageDisplaying] =
@@ -19,7 +25,8 @@ const Posts = ({ user }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    download(setPosts, user?.token);
+    setIsLoading(true);
+    download(setPosts, user?.token, setIsLoading);
   }, [user]);
 
   useEffect(() => {

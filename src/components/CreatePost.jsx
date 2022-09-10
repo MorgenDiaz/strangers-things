@@ -1,49 +1,55 @@
 import { useState } from "react";
-import { isStringEmpty } from "../util";
 import { createPost, updatePost } from "../data/api";
-import { useLocalStorage } from "../data/local-storage";
 import { useNavigate, useLocation } from "react-router-dom";
 
-export const CreatePost = () => {
-  const [user, setUser] = useLocalStorage("user", null);
-
-  const post = useLocation().state?.post;
-
-  const [title, setTitle] = useState(post ? post.title : "");
-  const [description, setDescription] = useState(post ? post.description : "");
-  const [price, setPrice] = useState(post ? post.price : "");
-  const [location, setLocation] = useState(post ? post.location : "");
-  const [willDeliver, setWillDeliver] = useState(
-    post ? post.willDeliver : false
-  );
-
+export const CreatePost = ({ user, setIsLoading }) => {
+  const originalPost = useLocation().state?.post;
   const navigate = useNavigate();
 
-  const addPost = async (
-    token,
-    title,
-    description,
-    price,
-    location,
-    willDeliver
-  ) => {
+  const [errorMessage, setErrorMessage] = useState("");
+  const [title, setTitle] = useState(originalPost ? originalPost.title : "");
+  const [description, setDescription] = useState(
+    originalPost ? originalPost.description : ""
+  );
+  const [price, setPrice] = useState(originalPost ? originalPost.price : "");
+  const [location, setLocation] = useState(
+    originalPost ? originalPost.location : ""
+  );
+  const [willDeliver, setWillDeliver] = useState(
+    originalPost ? originalPost.willDeliver : false
+  );
+
+  const executePostCommand = async () => {
     try {
-      const data = await createPost(
-        token,
-        title,
-        description,
-        price,
-        location,
-        willDeliver
-      );
+      if (originalPost) {
+        await updatePost(
+          user.token,
+          originalPost._id,
+          title,
+          description,
+          price,
+          location,
+          willDeliver
+        );
+      } else {
+        await createPost(
+          user.token,
+          title,
+          description,
+          price,
+          location,
+          willDeliver
+        );
+      }
 
-      console.log(data);
+      resetForm();
+      navigateBack();
     } catch (error) {
-      alert(error);
+      setErrorMessage(error.message);
     }
-  };
 
-  const onPost = async (title, description, price, location, willDeliver) => {};
+    setIsLoading(false);
+  };
 
   const resetForm = () => {
     setTitle("");
@@ -80,73 +86,53 @@ export const CreatePost = () => {
 
   const handleCreatePostClicked = async (event) => {
     event.preventDefault();
-
-    if (
-      isStringEmpty(title) ||
-      isStringEmpty(description) ||
-      isStringEmpty(price)
-    )
-      return;
-
-    if (post) {
-      updatePost(
-        user.token,
-        post._id,
-        title,
-        description,
-        price,
-        location,
-        willDeliver
-      );
-    } else {
-      await addPost(
-        user.token,
-        title,
-        description,
-        price,
-        location,
-        willDeliver
-      );
-    }
-
-    resetForm();
-    navigateBack();
+    setIsLoading(true);
+    executePostCommand();
   };
 
   const navigateBack = () => {
     navigate(-1);
   };
 
-  console.log("params are ", post);
   return (
-    <div>
+    <div className="flex flex-col pt-12">
+      <h1 className="text-2xl text-center uppercase">
+        post to stranger's things
+      </h1>
+
+      {errorMessage && <p className="mb-2 text-center">{errorMessage}</p>}
+
       <form onSubmit={handleCreatePostClicked} className="flex flex-col p-4">
         <input
-          className="my-2 p-2"
+          onChange={handleTitleChanged}
           type="text"
+          required
           placeholder={"Title"}
           value={title}
-          onChange={handleTitleChanged}
+          className="my-2 p-2"
         />
         <textarea
-          className="h-20 text-start align-top my-2 p-2"
+          onChange={handleDescriptionChanged}
+          required
           placeholder={"Description"}
           value={description}
-          onChange={handleDescriptionChanged}
+          className="h-20 text-start align-top my-2 p-2"
         />
         <input
-          className="my-2 p-2"
+          onChange={handlePriceChanged}
           type="text"
+          required
           placeholder={"Price"}
           value={price}
-          onChange={handlePriceChanged}
+          className="my-2 p-2"
         />
         <input
-          className="my-2 p-2"
+          onChange={handleLocationChanged}
           type="text"
+          required
           placeholder={"Location"}
           value={location}
-          onChange={handleLocationChanged}
+          className="my-2 p-2"
         />
         <div className="flex justify-center gap-1 mb-4">
           <label className="font-light" htmlFor="will_deliver">
@@ -161,7 +147,7 @@ export const CreatePost = () => {
           />
         </div>
         <button className="font-semibold text-lg" type="submit">
-          {post ? "Update Post" : "Create Post"}
+          {originalPost ? "Update Post" : "Create Post"}
         </button>
         <button onClick={navigateBack} className="text-lg">
           Cancel

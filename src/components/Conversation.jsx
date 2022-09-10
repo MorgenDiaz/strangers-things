@@ -1,14 +1,14 @@
 const Conversation = ({ title, messages, accountName }) => {
   return (
-    <div className="flex flex-col bg-overlay p-6 gap-4">
-      <p className="mt-2 self-center justify-self-end text-lg font-semibold">
+    <div className="flex flex-col bg-overlay px-6 py-4 gap-4">
+      <p className=" self-center justify-self-end text-xl font-semibold">
         {title}
       </p>
       {messages.map((message, i) => {
         return (
           <div key={i} className="flex flex-col bg-navigation p-2">
-            <p className="justify-self-end text-sm p-0">{message.sender}</p>
-            <p className="font-semibold p-0">{message.content}</p>
+            <p className="justify-self-end text-sm ">{message.sender}</p>
+            <p className="font-semibold">{message.content}</p>
           </div>
         );
       })}

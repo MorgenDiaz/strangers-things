@@ -2,16 +2,21 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { downloadUser, deletePost } from "../data/api";
 import { UserPostList } from "../components/UserPostList";
-import { Outlet, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Conversation from "../components/Conversation";
 
 const POSTS_TAB = "posts";
 const MESSAGES_TAB = "messages";
 
-const downloadPofile = async (token, setProfile) => {
-  const profileData = await downloadUser(token);
-  console.log(profileData.messages);
-  setProfile(profileData);
+const downloadPofile = async (token, setProfile, setIsLoading) => {
+  try {
+    const profileData = await downloadUser(token);
+    setProfile(profileData);
+  } catch (error) {
+    alert(error);
+  }
+
+  setIsLoading(false);
 };
 
 const groupMessagesByPost = (messages) => {
@@ -45,7 +50,7 @@ const getPostMessages = (messages) => {
   return conversations;
 };
 
-const UserProfile = ({ user }) => {
+const UserProfile = ({ user, setIsLoading }) => {
   const [profile, setProfile] = useState(null);
   const [tab, setTab] = useState(POSTS_TAB);
 
@@ -53,16 +58,18 @@ const UserProfile = ({ user }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    downloadPofile(token, setProfile);
-  }, [token]);
+    setIsLoading(true);
+    downloadPofile(token, setProfile, setIsLoading);
+  }, [token, setIsLoading]);
 
   const handleEditPostClicked = async (post) => {
     navigate("/create", { state: { post } });
   };
 
   const handleDeletePostClicked = async (postId) => {
+    setIsLoading(true);
     await deletePost(token, postId);
-    downloadPofile(token, setProfile);
+    downloadPofile(token, setProfile, setIsLoading);
   };
 
   const renerTabContent = () => {
