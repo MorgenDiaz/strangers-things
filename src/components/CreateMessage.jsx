@@ -1,5 +1,6 @@
 import { isStringEmpty } from "../util";
 import { useState } from "react";
+import BigTextBox from "./BigTextBox";
 
 export const CreateMessage = ({
   className,
@@ -26,11 +27,8 @@ export const CreateMessage = ({
       className={`flex flex-col p-2 justify-between bg-navigation ${className}`}
     >
       <h3>{recipient}</h3>
-      <textarea
-        onChange={onMessageChanged}
-        placeholder="Enter message..."
-        className="h-48"
-      ></textarea>
+
+      <BigTextBox onChange={onMessageChanged} placeholder="Enter message..." />
       <button onClick={onSendMessageClicked}>Send</button>
       <button onClick={cancelHandler}>Cancel</button>
     </div>

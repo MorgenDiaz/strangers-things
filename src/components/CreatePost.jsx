@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { createPost, updatePost } from "../data/api";
 import { useNavigate, useLocation } from "react-router-dom";
+import PrimaryButton from "./PrimaryButton";
+import TextBox from "./TextBox";
+import ErrorMessage from "./ErrorMessage";
+import BigTextBox from "./BigTextBox";
 
 export const CreatePost = ({ user, setIsLoading }) => {
   const originalPost = useLocation().state?.post;
@@ -95,47 +99,42 @@ export const CreatePost = ({ user, setIsLoading }) => {
   };
 
   return (
-    <div className="flex flex-col pt-12">
-      <h1 className="text-2xl text-center uppercase">
+    <div className="flex flex-col pt-12 px-6">
+      <h1 className="text-2xl font-semibold self-center text-center text-gray-900 tracking-wide uppercase pb-6">
         post to stranger's things
       </h1>
 
-      {errorMessage && <p className="mb-2 text-center">{errorMessage}</p>}
+      {errorMessage && <ErrorMessage message={errorMessage} />}
 
-      <form onSubmit={handleCreatePostClicked} className="flex flex-col p-4">
-        <input
+      <form onSubmit={handleCreatePostClicked} className="flex flex-col gap-4">
+        <TextBox
           onChange={handleTitleChanged}
-          type="text"
-          required
-          placeholder={"Title"}
           value={title}
-          className="my-2 p-2"
+          placeholder={"Title"}
+          required={true}
         />
-        <textarea
+
+        <BigTextBox
           onChange={handleDescriptionChanged}
-          required
           placeholder={"Description"}
+          required={true}
           value={description}
-          className="h-20 text-start align-top my-2 p-2"
         />
-        <input
+
+        <TextBox
           onChange={handlePriceChanged}
-          type="text"
-          required
-          placeholder={"Price"}
           value={price}
-          className="my-2 p-2"
+          placeholder={"Price"}
+          required={true}
         />
-        <input
+
+        <TextBox
           onChange={handleLocationChanged}
-          type="text"
-          required
-          placeholder={"Location"}
           value={location}
-          className="my-2 p-2"
+          placeholder={"Location"}
         />
-        <div className="flex justify-center gap-1 mb-4">
-          <label className="font-light" htmlFor="will_deliver">
+        <div className="flex justify-center gap-2">
+          <label className="font-semibold text-gray-900" htmlFor="will_deliver">
             Will deliver to buyer
           </label>
           <input
@@ -146,10 +145,12 @@ export const CreatePost = ({ user, setIsLoading }) => {
             onChange={handleWillDeliverChanged}
           />
         </div>
-        <button className="font-semibold text-lg" type="submit">
-          {originalPost ? "Update Post" : "Create Post"}
-        </button>
-        <button onClick={navigateBack} className="text-lg">
+
+        <PrimaryButton value={originalPost ? "Update Post" : "Create Post"} />
+        <button
+          onClick={navigateBack}
+          className="uppercase self-center text-gray-800"
+        >
           Cancel
         </button>
       </form>

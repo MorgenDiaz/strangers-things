@@ -3,6 +3,7 @@ import { registerUser } from "../data/api";
 import { useState } from "react";
 import TextBox from "../components/TextBox";
 import PrimaryButton from "../components/PrimaryButton";
+import ErrorMessage from "../components/ErrorMessage";
 
 const Register = ({ setUser }) => {
   const [name, setName] = useState("");
@@ -38,7 +39,7 @@ const Register = ({ setUser }) => {
         {"create an account"}
       </h2>
 
-      {errorMessage && <p className="mb-2">{errorMessage}</p>}
+      {errorMessage && <ErrorMessage message={errorMessage} />}
 
       <form onSubmit={handleFormSubmission} className="flex flex-col gap-4">
         <TextBox
