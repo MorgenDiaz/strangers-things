@@ -1,18 +1,18 @@
 import "./App.css";
 import {
-  Navigation,
   Home,
   Posts,
   Login,
   UserProfile,
   Register,
+  CreatePost,
 } from "./routes";
 
 import Loading from "./components/Loading";
 import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import { useLocalStorage } from "./data/local-storage";
 import { useEffect, useState } from "react";
-import { CreatePost } from "./components/CreatePost";
+import Navigation from "./components/Navigation";
 
 function App() {
   const [user, setUser] = useLocalStorage("user", null);

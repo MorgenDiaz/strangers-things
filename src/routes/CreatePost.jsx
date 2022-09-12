@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { createPost, updatePost } from "../data/api";
 import { useNavigate, useLocation } from "react-router-dom";
-import PrimaryButton from "./PrimaryButton";
-import TextBox from "./TextBox";
-import ErrorMessage from "./ErrorMessage";
-import BigTextBox from "./BigTextBox";
+import PrimaryButton from "../components/PrimaryButton";
+import TextBox from "../components/TextBox";
+import ErrorMessage from "../components/ErrorMessage";
+import BigTextBox from "../components/BigTextBox";
 
-export const CreatePost = ({ user, setIsLoading }) => {
+const CreatePost = ({ user, setIsLoading }) => {
   const originalPost = useLocation().state?.post;
   const navigate = useNavigate();
 
@@ -157,3 +157,5 @@ export const CreatePost = ({ user, setIsLoading }) => {
     </div>
   );
 };
+
+export default CreatePost;

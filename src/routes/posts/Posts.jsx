@@ -1,9 +1,9 @@
-import { downloadPosts, sendMessage } from "../data/api";
+import { downloadPosts, sendMessage } from "../../data/api";
 import { useState, useEffect } from "react";
-import { Post } from "../components/Post";
-import { CreateMessage } from "../components/CreateMessage";
+import { Post } from "./Post";
+import { CreateMessage } from "./CreateMessage";
 import { Outlet, useNavigate } from "react-router-dom";
-import TextBox from "../components/TextBox";
+import TextBox from "../../components/TextBox";
 
 const download = async (setPosts, token, setIsLoading) => {
   try {
@@ -40,8 +40,13 @@ const Posts = ({ user, setIsLoading }) => {
   };
 
   const handleSendMessageClicked = async (message) => {
-    await sendMessage(user.token, messageDetails.postId, message);
-    setIsCreateMessageDisplaying(false);
+    console.log("anything?");
+    try {
+      await sendMessage(user.token, messageDetails.postId, message);
+      setIsCreateMessageDisplaying(false);
+    } catch (error) {
+      alert("There was a problem sending your message.");
+    }
   };
 
   const handleCancelMessageClicked = () => {
@@ -97,20 +102,6 @@ const Posts = ({ user, setIsLoading }) => {
           );
         })}
       </div>
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        strokeWidth={1.5}
-        stroke="currentColor"
-        className="w-6 h-6"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M12 4.5v15m7.5-7.5h-15"
-        />
-      </svg>
 
       {user && (
         <svg

@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useEffect } from "react";
-import { downloadUser, deletePost } from "../data/api";
-import { UserPostList } from "../components/UserPostList";
+import { downloadUser, deletePost } from "../../data/api";
+import { UserPostList } from "./UserPostList";
 import { useNavigate } from "react-router-dom";
-import UserMessages from "../components/UserMessages";
+import UserMessages from "./UserMessages";
 
 const POSTS_TAB = "posts";
 const MESSAGES_TAB = "messages";
