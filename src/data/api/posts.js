@@ -1,6 +1,12 @@
-import { METHOD_DELETE, METHOD_GET, METHOD_PATCH, METHOD_POST } from "./util";
+import {
+  METHOD_DELETE,
+  METHOD_GET,
+  METHOD_PATCH,
+  METHOD_POST,
+  createOptions,
+  makeRequest,
+} from "./util";
 import { isStringEmpty } from "../../util";
-import { createOptions, makeRequest } from "./util";
 
 const POSTS = `posts`;
 

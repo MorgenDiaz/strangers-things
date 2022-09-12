@@ -1,3 +1,6 @@
+import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+
 import "./App.css";
 import {
   Home,
@@ -8,26 +11,28 @@ import {
   CreatePost,
 } from "./routes";
 
-import Loading from "./components/Loading";
-import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import { useLocalStorage } from "./data/local-storage";
-import { useEffect, useState } from "react";
-import Navigation from "./components/Navigation";
+import { Navigation, Loading } from "./components";
 
 function App() {
-  const [user, setUser] = useLocalStorage("user", null);
-  const [isLoading, setIsLoading] = useState(false);
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (user && (pathname === `/login` || pathname === `/register`)) {
+  const [user, setUser] = useLocalStorage("user", null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const rerouteLoggedInUserFromLoginRegister = (user, path, navigate) => {
+    if (user && (path === `/login` || path === `/register`)) {
       navigate("/profile");
     }
+  };
+
+  useEffect(() => {
+    rerouteLoggedInUserFromLoginRegister(user, pathname, navigate);
   });
 
   return (
-    <div className="bg-gray-400 min-h-[100vh] flex flex-col text-text pt-16">
+    <div className=" min-h-[100vh] flex flex-col pt-16 bg-gray-400 text-text ">
       <Navigation user={user} setUser={setUser} />
 
       {isLoading && <Loading />}
@@ -38,6 +43,7 @@ function App() {
             index
             element={<Posts user={user} setIsLoading={setIsLoading} />}
           />
+
           <Route
             path="/create"
             element={<CreatePost user={user} setIsLoading={setIsLoading} />}
@@ -48,7 +54,9 @@ function App() {
           path="/profile"
           element={<UserProfile user={user} setIsLoading={setIsLoading} />}
         />
+
         <Route path="/login" element={<Login setUser={setUser} />} />
+
         <Route path="/register" element={<Register setUser={setUser} />} />
       </Routes>
     </div>
