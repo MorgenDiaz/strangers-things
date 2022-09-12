@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { Post } from "../components/Post";
 import { CreateMessage } from "../components/CreateMessage";
 import { Outlet, useNavigate } from "react-router-dom";
+import TextBox from "../components/TextBox";
 
 const download = async (setPosts, token, setIsLoading) => {
   try {
@@ -69,20 +70,19 @@ const Posts = ({ user, setIsLoading }) => {
           postId={messageDetails.postId}
           sendMessageHandler={handleSendMessageClicked}
           cancelHandler={handleCancelMessageClicked}
-          className="fixed top-1/2 left-2 right-2 transform -translate-y-1/2 h-72"
+          className=""
         />
       )}
 
-      <div className="flex items-center fixed left-0 right-0 h-20 bg-background ">
-        <form className="flex grow">
-          <input
+      <div className="flex items-center fixed left-0 right-0 h-20 bg-gray-200">
+        <form className="flex flex-col grow px-6">
+          <TextBox
             onChange={handleSearchChanged}
             placeholder="Search Posts..."
-            className="grow p-2 mx-4"
           />
         </form>
       </div>
-      <div className="flex flex-col place-content-evenly content-evenly pt-16">
+      <div className="flex flex-col place-content-evenly content-evenly pt-20">
         {filteredPosts.map((post) => {
           const { _id, author } = post;
           return (
@@ -97,6 +97,20 @@ const Posts = ({ user, setIsLoading }) => {
           );
         })}
       </div>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth={1.5}
+        stroke="currentColor"
+        className="w-6 h-6"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M12 4.5v15m7.5-7.5h-15"
+        />
+      </svg>
 
       {user && (
         <svg
@@ -104,16 +118,16 @@ const Posts = ({ user, setIsLoading }) => {
             navigate(`/create`);
           }}
           xmlns="http://www.w3.org/2000/svg"
-          fill="#CCCCCC"
+          fill="hsl(240, 5.3%, 26.1%)"
           viewBox="0 0 24 24"
           strokeWidth={1.5}
-          stroke="currentColor"
-          className="fixed bottom-2 right-2 w-14 h-14"
+          stroke="hsl(240, 5.9%, 90%)"
+          className="fixed bottom-2 right-2 w-14 h-14 border-2 border-gray-900 bg-gray-700 rounded-xl"
         >
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
-            d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+            d="M12 4.5v15m7.5-7.5h-15"
           />
         </svg>
       )}

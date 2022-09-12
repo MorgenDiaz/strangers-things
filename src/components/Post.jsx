@@ -3,7 +3,7 @@ export const Post = ({ signedIn, post, writeMessageClickedHandler }) => {
     post;
   const canMessageSeller = signedIn && !isAuthor;
   return (
-    <div className="flex flex-col bg-overlay px-4 pt-8 pb-4 m-4 ">
+    <div className="flex flex-col bg-gray-100 px-6 pt-8 pb-4 border-b border-gray-500">
       <div className="flex items-baseline justify-between mb-4">
         <h3 className="text-text text-xl">{title}</h3>
         <h3 className="justify-self-end text-text text-lg font-bold leading-tight text-right">

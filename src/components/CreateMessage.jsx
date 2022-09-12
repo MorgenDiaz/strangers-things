@@ -31,7 +31,12 @@ export const CreateMessage = ({
 
       <BigTextBox onChange={onMessageChanged} placeholder="Enter message..." />
       <PrimaryButton onClick={onSendMessageClicked} value="Send" />
-      <button onClick={cancelHandler}>Cancel</button>
+      <button
+        onClick={cancelHandler}
+        className="pt-2 uppercase self-center text-gray-800"
+      >
+        Cancel
+      </button>
     </div>
   );
 };

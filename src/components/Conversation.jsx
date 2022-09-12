@@ -1,14 +1,19 @@
 const Conversation = ({ title, messages, accountName }) => {
   return (
-    <div className="flex flex-col bg-overlay px-6 py-4 gap-4">
-      <p className=" self-center justify-self-end text-xl font-semibold">
+    <div className="flex flex-col bg-gray-100 p-6 gap-4 rounded-md">
+      <p className=" self-center justify-self-end text-xl font-semibold text-gray-900">
         {title}
       </p>
       {messages.map((message, i) => {
         return (
-          <div key={i} className="flex flex-col bg-navigation p-2">
-            <p className="justify-self-end text-sm ">{message.sender}</p>
-            <p className="font-semibold">{message.content}</p>
+          <div
+            key={i}
+            className="flex flex-col bg-gray-200 p-2 border rounded-md border-gray-900"
+          >
+            <p className="justify-self-end text-sm text-gray-900">
+              {message.sender}
+            </p>
+            <p className="font-semibold text-gray-900">{message.content}</p>
           </div>
         );
       })}

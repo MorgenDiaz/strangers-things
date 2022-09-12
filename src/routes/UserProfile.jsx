@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { downloadUser, deletePost } from "../data/api";
 import { UserPostList } from "../components/UserPostList";
 import { useNavigate } from "react-router-dom";
-import Conversation from "../components/Conversation";
+import UserMessages from "../components/UserMessages";
 
 const POSTS_TAB = "posts";
 const MESSAGES_TAB = "messages";
@@ -85,20 +85,11 @@ const UserProfile = ({ user, setIsLoading }) => {
       case MESSAGES_TAB: {
         const postConversations = getPostMessages(profile.messages);
 
-        console.log(postConversations);
         return (
-          <div className="flex flex-col gap-4">
-            {postConversations.map((conversation, i) => {
-              return (
-                <Conversation
-                  key={i}
-                  title={conversation.title}
-                  messages={conversation.messages}
-                  accountName={user.name}
-                />
-              );
-            })}
-          </div>
+          <UserMessages
+            conversations={postConversations}
+            userName={user.name}
+          />
         );
       }
       default:
@@ -114,14 +105,14 @@ const UserProfile = ({ user, setIsLoading }) => {
     setTab(MESSAGES_TAB);
   };
 
-  const STYLE_ACTIVE_TAB = "font-semibold border-b-2 border-nav";
+  const STYLE_ACTIVE_TAB = "font-semibold border-b-2 border-gray-600";
 
   return (
-    <div className="flex flex-col items-stretch p-4">
+    <div className="flex flex-col items-stretch p-4 pt-12">
       <div className="flex justify-evenly mb-4">
         <h1
           onClick={handlePostsTabClicked}
-          className={`grow text-lg text-center text-text_secondary pb-2 ${
+          className={`grow text-lg text-center text-gray-800 pb-2 ${
             tab === POSTS_TAB ? STYLE_ACTIVE_TAB : ""
           }`}
         >
@@ -129,7 +120,7 @@ const UserProfile = ({ user, setIsLoading }) => {
         </h1>
         <h1
           onClick={handleMessagesTabClicked}
-          className={`grow text-lg text-center text-text_secondary pb-2 ${
+          className={`grow text-lg text-center text-gray-800 pb-2 ${
             tab === MESSAGES_TAB ? STYLE_ACTIVE_TAB : ""
           }`}
         >
