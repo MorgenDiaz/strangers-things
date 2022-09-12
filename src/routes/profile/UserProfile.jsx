@@ -1,61 +1,20 @@
-import { useState } from "react";
-import { useEffect } from "react";
-import { downloadUser, deletePost } from "../../data/api";
-import { UserPostList } from "./UserPostList";
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { downloadPofile, deleteUserPost, getPostMessages } from "./helpers";
+import UserPostList from "./UserPostList";
 import UserMessages from "./UserMessages";
 
 const POSTS_TAB = "posts";
 const MESSAGES_TAB = "messages";
 
-const downloadPofile = async (token, setProfile, setIsLoading) => {
-  try {
-    const profileData = await downloadUser(token);
-    setProfile(profileData);
-  } catch (error) {
-    alert(error);
-  }
-
-  setIsLoading(false);
-};
-
-const groupMessagesByPost = (messages) => {
-  const messagesByPosts = {};
-
-  for (let message of messages) {
-    if (!messagesByPosts[message.post._id])
-      messagesByPosts[message.post._id] = {
-        title: message.post.title,
-        messages: [],
-      };
-
-    messagesByPosts[message.post._id].messages.push({
-      sender: message.fromUser.username,
-      content: message.content,
-    });
-  }
-
-  return messagesByPosts;
-};
-
-const getPostMessages = (messages) => {
-  const postMessages = groupMessagesByPost(messages);
-
-  const conversations = [];
-
-  for (let postId in postMessages) {
-    conversations.push(postMessages[postId]);
-  }
-
-  return conversations;
-};
-
 const UserProfile = ({ user, setIsLoading }) => {
+  const navigate = useNavigate();
+
   const [profile, setProfile] = useState(null);
   const [tab, setTab] = useState(POSTS_TAB);
 
   const token = user.token ? user.token : null;
-  const navigate = useNavigate();
+  const STYLE_ACTIVE_TAB = "font-semibold border-b-2 border-gray-600";
 
   useEffect(() => {
     setIsLoading(true);
@@ -68,8 +27,16 @@ const UserProfile = ({ user, setIsLoading }) => {
 
   const handleDeletePostClicked = async (postId) => {
     setIsLoading(true);
-    await deletePost(token, postId);
+    await deleteUserPost(token, postId);
     downloadPofile(token, setProfile, setIsLoading);
+  };
+
+  const handlePostsTabClicked = () => {
+    setTab(POSTS_TAB);
+  };
+
+  const handleMessagesTabClicked = () => {
+    setTab(MESSAGES_TAB);
   };
 
   const renerTabContent = () => {
@@ -96,16 +63,6 @@ const UserProfile = ({ user, setIsLoading }) => {
         return;
     }
   };
-
-  const handlePostsTabClicked = () => {
-    setTab(POSTS_TAB);
-  };
-
-  const handleMessagesTabClicked = () => {
-    setTab(MESSAGES_TAB);
-  };
-
-  const STYLE_ACTIVE_TAB = "font-semibold border-b-2 border-gray-600";
 
   return (
     <div className="flex flex-col items-stretch p-4 pt-12">

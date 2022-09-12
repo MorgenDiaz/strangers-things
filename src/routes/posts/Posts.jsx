@@ -1,9 +1,10 @@
-import { downloadPosts, sendMessage } from "../../data/api";
 import { useState, useEffect } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
+
+import { downloadPosts, sendMessage } from "../../data/api";
 import { Post } from "./Post";
 import { CreateMessage } from "./CreateMessage";
-import { Outlet, useNavigate } from "react-router-dom";
-import TextBox from "../../components/TextBox";
+import { AddButton, TextBox } from "../../components";
 
 const download = async (setPosts, token, setIsLoading) => {
   try {
@@ -17,18 +18,18 @@ const download = async (setPosts, token, setIsLoading) => {
 };
 
 const Posts = ({ user, setIsLoading }) => {
+  const navigate = useNavigate();
+
   const [posts, setPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [isCreateMessageDisplaying, setIsCreateMessageDisplaying] =
     useState(false);
   const [messageDetails, setMessageDetails] = useState({});
 
-  const navigate = useNavigate();
-
   useEffect(() => {
     setIsLoading(true);
     download(setPosts, user?.token, setIsLoading);
-  }, [user]);
+  }, [user, setIsLoading]);
 
   useEffect(() => {
     setFilteredPosts(posts);
@@ -40,7 +41,6 @@ const Posts = ({ user, setIsLoading }) => {
   };
 
   const handleSendMessageClicked = async (message) => {
-    console.log("anything?");
     try {
       await sendMessage(user.token, messageDetails.postId, message);
       setIsCreateMessageDisplaying(false);
@@ -75,7 +75,6 @@ const Posts = ({ user, setIsLoading }) => {
           postId={messageDetails.postId}
           sendMessageHandler={handleSendMessageClicked}
           cancelHandler={handleCancelMessageClicked}
-          className=""
         />
       )}
 
@@ -87,9 +86,11 @@ const Posts = ({ user, setIsLoading }) => {
           />
         </form>
       </div>
+
       <div className="flex flex-col place-content-evenly content-evenly pt-20">
         {filteredPosts.map((post) => {
           const { _id, author } = post;
+
           return (
             <Post
               key={_id}
@@ -103,25 +104,7 @@ const Posts = ({ user, setIsLoading }) => {
         })}
       </div>
 
-      {user && (
-        <svg
-          onClick={() => {
-            navigate(`/create`);
-          }}
-          xmlns="http://www.w3.org/2000/svg"
-          fill="hsl(240, 5.3%, 26.1%)"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="hsl(240, 5.9%, 90%)"
-          className="fixed bottom-2 right-2 w-14 h-14 border-2 border-gray-900 bg-gray-700 rounded-xl"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M12 4.5v15m7.5-7.5h-15"
-          />
-        </svg>
-      )}
+      {user && <AddButton onClick={() => navigate(`/create`)} />}
       <Outlet />
     </div>
   );

@@ -1,11 +1,9 @@
-import { isStringEmpty } from "../../util";
 import { useState } from "react";
-import BigTextBox from "../../components/BigTextBox";
-import PrimaryButton from "../../components/PrimaryButton";
+import { isStringEmpty } from "../../util";
+import { BigTextBox, PrimaryButton } from "../../components";
 
 export const CreateMessage = ({
   recipient,
-  postId,
   sendMessageHandler,
   cancelHandler,
 }) => {
@@ -18,7 +16,6 @@ export const CreateMessage = ({
 
   const onSendMessageClicked = () => {
     if (isStringEmpty(message)) return;
-
     sendMessageHandler(message);
   };
 
@@ -37,7 +34,9 @@ export const CreateMessage = ({
           placeholder="Enter message..."
           required={true}
         />
+
         <PrimaryButton value="Send" />
+
         <button
           onClick={cancelHandler}
           className="pt-2 uppercase self-center text-gray-800"

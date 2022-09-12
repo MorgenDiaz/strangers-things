@@ -32,11 +32,10 @@ function App() {
   });
 
   return (
-    <div className=" min-h-[100vh] flex flex-col pt-16 bg-gray-400 text-text ">
+    <div className=" min-h-[100vh] flex flex-col  pt-16 bg-gray-400 text-text ">
       <Navigation user={user} setUser={setUser} />
 
       {isLoading && <Loading />}
-
       <Routes>
         <Route path="/" element={<Home />}>
           <Route

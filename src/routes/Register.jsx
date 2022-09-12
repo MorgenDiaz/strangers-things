@@ -4,11 +4,11 @@ import { registerUser } from "../data/api";
 import { TextBox, PrimaryButton, ErrorMessage } from "../components";
 
 const Register = ({ setUser }) => {
+  const navigate = useNavigate();
+
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-
-  const navigate = useNavigate();
 
   const handleFormSubmission = async (event) => {
     event.preventDefault();

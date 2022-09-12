@@ -1,6 +1,6 @@
 import UserPost from "./UserPost";
 
-export const UserPostList = ({
+const UserPostList = ({
   posts,
   editPostClickedHandler,
   deletePostClickedHandler,
@@ -20,3 +20,5 @@ export const UserPostList = ({
     </div>
   );
 };
+
+export default UserPostList;
