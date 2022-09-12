@@ -1,19 +1,19 @@
-import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+
 import { login } from "../data/api";
-import TextBox from "../components/TextBox";
-import PrimaryButton from "../components/PrimaryButton";
-import ErrorMessage from "../components/ErrorMessage";
+import { TextBox, PrimaryButton, ErrorMessage } from "../components";
 
 const Login = ({ setUser }) => {
+  const navigate = useNavigate();
+
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  const navigate = useNavigate();
-
   const handleFormSubmission = async (event) => {
     event.preventDefault();
+
     try {
       const userToken = await login(name, password);
       setUser({ name, token: userToken });
@@ -35,7 +35,7 @@ const Login = ({ setUser }) => {
 
   return (
     <div className="flex flex-col pt-12 px-6">
-      <h2 className="text-2xl font-semibold self-center text-gray-900 tracking-wide uppercase pb-6">
+      <h2 className="pb-6 text-2xl font-semibold self-center text-gray-900 tracking-wide uppercase ">
         {"login"}
       </h2>
 
